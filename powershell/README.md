@@ -1,10 +1,4 @@
 # NEXT PowerShell Profile
-<div align=left>
-   <img src="https://img.shields.io/github/v/release/MurthiNext/NEXT-PowerShell-Profile">
-   <img src="https://img.shields.io/github/license/MurthiNext/NEXT-PowerShell-Profile">
-   <img src="https://img.shields.io/github/downloads/MurthiNext/NEXT-PowerShell-Profile/total">
-   <img src="https://img.shields.io/github/stars/MurthiNext/NEXT-PowerShell-Profile">
-</div>
 
 ### Yes! 这是 MurthiNext 本人正在使用且精心编写的 PowerShell 配置文件，其正在强势维护中，与一般的配置文件不同，在花里胡哨的同时，也要追求实用！
 
