@@ -1,0 +1,369 @@
+# NEXT Mihomo Profile
+#
+# 作者：MurthiNext
+# 日期：2026/06/29
+# 版本：1.1
+
+# ==================== 基础配置 ====================
+# 代理提供者模板
+BaseProvider: &BaseProvider {type: http, interval: 86400, proxy: DIRECT, health-check: {enable: true, url: https://www.google.com/generate_204, interval: 300}, filter: "^(?!.*(群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author))"}
+
+# 策略组类型模板
+BaseFB: &BaseFB {type: fallback, interval: 300, lazy: true, url: https://www.google.com/generate_204}
+BaseCH: &BaseCH {type: load-balance, interval: 300, lazy: true, url: https://www.google.com/generate_204, strategy: consistent-hashing, hidden: true}
+BaseCR: &BaseCR {type: load-balance, interval: 300, lazy: true, url: https://www.google.com/generate_204, strategy: round-robin, hidden: true}
+BaseUT: &BaseUT {type: url-test, interval: 300, lazy: true, url: https://www.google.com/generate_204, hidden: true}
+
+# 节点筛选正则表达式
+FilterHK: &FilterHK "^(?=.*(?i)(港|🇭🇰|HK|Hong|HKG))(?!.*(排除1|排除2|5x)).*$"
+FilterSG: &FilterSG "^(?=.*(?i)(坡|🇸🇬|SG|Sing|SIN|XSP))(?!.*(排除1|排除2|5x)).*$"
+FilterJP: &FilterJP "^(?=.*(?i)(日|🇯🇵|JP|Japan|NRT|HND|KIX|CTS|FUK))(?!.*(排除1|排除2|5x)).*$"
+FilterKR: &FilterKR "^(?=.*(?i)(韩|🇰🇷|韓|首尔|南朝鲜|KR|KOR|Korea|South))(?!.*(排除1|排除2|5x)).*$"
+FilterUS: &FilterUS "^(?=.*(?i)(美|🇺🇸|US|USA|SJC|JFK|LAX|ORD|ATL|DFW|SFO|MIA|SEA|IAD))(?!.*(排除1|排除2|5x)).*$"
+FilterTW: &FilterTW "^(?=.*(?i)(?:台|🇹🇼|TW|tw\b|taiwan|taipei|kaohsiung|tpe|tsa|khh))(?!.*(排除1|排除2|5x)).*$"
+FilterEU: &FilterEU "^(?=.*(?i)(奥|比|保|克罗地亚|塞|捷|丹|爱沙|芬|法|德|希|匈|爱尔|意|拉|立|卢|马耳它|荷|波|葡|罗|斯洛伐|斯洛文|西|瑞|英|🇧🇪|🇨🇿|🇩🇰|🇫🇮|🇫🇷|🇩🇪|🇮🇪|🇮🇹|🇱🇹|🇱🇺|🇳🇱|🇵🇱|🇸🇪|🇬🇧|CDG|FRA|AMS|MAD|BCN|FCO|MUC|BRU))(?!.*(排除1|排除2|5x)).*$"
+FilterOT: &FilterOT "^(?!.*(DIRECT|直接连接|美|港|坡|台|新|日|韩|奥|比|保|克罗地亚|塞|捷|丹|爱沙|芬|法|德|希|匈|爱尔|意|拉|立|卢|马其它|荷|波|葡|罗|斯洛伐|斯洛文|西|瑞|英|🇭🇰|🇼🇸|🇹🇼|🇸🇬|🇯🇵|🇰🇷|🇺🇸|🇬🇧|🇦🇹|🇧🇪|🇨🇿|🇩🇰|🇫🇮|🇫🇷|🇩🇪|🇮🇪|🇮🇹|🇱🇹|🇱🇺|🇳🇱|🇵🇱|🇸🇪|HK|TW|SG|JP|KR|US|GB|CDG|FRA|AMS|MAD|BCN|FCO|MUC|BRU|HKG|TPE|TSA|KHH|SIN|XSP|NRT|HND|KIX|CTS|FUK|JFK|LAX|ORD|ATL|DFW|SFO|MIA|SEA|IAD|LHR|LGW))"
+FilterAL: &FilterAL "^(?!.*(DIRECT|直接连接|群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author))"
+
+# 自建ver.
+FilterSP: &FilterSP "^(?=.*(?i)(自建))(?!.*(排除1|排除2|5x)).*$"
+FilterHK_SP: &FilterHK_SP "^(?=.*(?i)(自建|港|🇭🇰|HK|Hong|HKG))(?!.*(排除1|排除2|5x)).*$"
+FilterUS_SP: &FilterUS_SP "^(?=.*(?i)(自建|美|🇺🇸|US|USA|SJC|JFK|LAX|ORD|ATL|DFW|SFO|MIA|SEA|IAD))(?!.*(排除1|排除2|5x)).*$"
+
+# ==================== 代理提供 ====================
+proxy-providers:
+  Airport1: {<<: *BaseProvider, url: "<url>", override: {additional-prefix: "[优] "}, path: ./proxies/Airport1.yaml}
+  Airport2: {<<: *BaseProvider, url: "<url>", override: {additional-prefix: "[普] "}, path: ./proxies/Airport2.yaml}
+  Airport3: {<<: *BaseProvider, url: "<url>", override: {additional-prefix: "[廉] "}, path: ./proxies/Airport3.yaml}
+
+proxies: # 名称包含“自建”则视为自建节点
+  - name: 美国自建VLESS-Reality
+    type: vless
+    server: servername
+    port: 11451
+
+Best: &Best {use: [Airport1]} # 优质，适用于IP敏感的网站
+Daily: &Daily {use: [Airport2]} # 日用，适用于常规网站
+Cheap: &Cheap {use: [Airport3]} # 廉价，适用于下载网站
+
+DailyHK: &DailyHK {<<: *Daily, type: select, proxies: [香港策略, 狮城策略, 日本策略, 韩国策略, 美国策略, 台湾策略, 欧盟策略, 默认代理, 全球手动, 冷门自选, DIRECT], include-all-proxies: true, filter: *FilterHK_SP}
+DailyUS: &DailyUS {<<: *Daily, type: select, proxies: [美国策略, 台湾策略, 欧盟策略, 香港策略, 狮城策略, 日本策略, 韩国策略, 默认代理, 全球手动, 冷门自选, DIRECT], include-all-proxies: true, filter: *FilterUS_SP}
+DailyDF: &DailyDF {<<: *Daily, type: select, proxies: [默认代理, 香港策略, 狮城策略, 日本策略, 韩国策略, 美国策略, 台湾策略, 欧盟策略, 全球手动, 冷门自选, DIRECT], include-all-proxies: true, filter: *FilterSP}
+BestUS: &BestUS {<<: *Best, type: select, proxies: [美国精选, 台湾精选, 欧盟精选, 香港精选, 狮城精选, 日本精选, 韩国精选, 默认代理, 全球手动, 冷门自选, DIRECT], include-all-proxies: true, filter: *FilterUS_SP}
+  
+# ==================== 核心配置 ====================
+# 基础配置
+mode: rule
+mixed-port: 7890
+ipv6: true
+allow-lan: true
+unified-delay: true
+tcp-concurrent: true
+log-level: warning
+bind-address: "*"
+find-process-mode: always
+keep-alive-interval: 15
+keep-alive-idle: 600
+
+# 实验性功能
+experimental:
+  quic-go-disable-gso: true
+
+# 管理面板配置
+external-controller: 0.0.0.0:9090
+secret: clashsecret
+
+# 配置存储
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# 流量嗅探
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - Mijia Cloud
+    - +.push.apple.com
+
+# TUN模式配置
+tun:
+  enable: false
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+  stack: mixed
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+
+# DNS配置
+dns:
+  enable: true
+  ipv6: true
+  cache-algorithm: arc
+  listen: 0.0.0.0:53
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/15
+  fake-ip-range6: fdfe:dcba:9876::1/64
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - rule-set:fakeip-filter
+    - geosite:private
+    - geosite:connectivity-check
+    - "ssh.github.com"
+    - "*.lan"
+    - "localhost.ptlogin2.qq.com"
+    - "+.stun.*.*"
+    - "+.stun.*.*.*"
+    - "+.stun.*.*.*.*"
+    - "*.localhost"
+    - "time.*.com"
+    - "*.srv.nintendo.net"
+    - "*.stun.playstation.net"
+    - "ntp.*.com"
+    - "msftconnecttest.com"
+    - "msftncsi.com"
+  default-nameserver:
+    - 119.29.29.29
+    - 223.5.5.5
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  fallback:
+    - https://dns.google/dns-query
+    - https://cloudflare-dns.com/dns-query
+    - https://1.1.1.1/dns-query
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+  direct-nameserver:
+    - https://dns.alidns.com/dns-query
+    
+# GeoIP自动更新
+geodata-mode: true
+geodata-loader: standard
+geo-auto-update: true
+geo-update-interval: 24
+geox-url:
+  geoip: https://gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat
+  geosite: https://gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
+  mmdb: https://gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb
+  asn: https://gh-proxy.org/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb
+   
+# ==================== 策略配置 ====================
+proxy-groups:
+  # --------外显内容--------
+  # 主要策略组
+  - {name: 默认代理,     type: select, proxies: [故障转移, 香港策略, 狮城策略, 日本策略, 韩国策略, 美国策略, 台湾策略, 欧盟策略, 冷门自选, 全球手动, DIRECT], icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Static.png}
+  - {name: 故障转移,     <<: *BaseFB, proxies: [香港策略, 狮城策略, 日本策略, 韩国策略, 美国策略, 台湾策略, 欧盟策略, 全球手动, 冷门自选, DIRECT], icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Available.png}
+  - {name: 广告拦截,     type: select, proxies: [REJECT, PASS, DIRECT], icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Advertising.png}
+  - {name: 兜底流量,     <<: *DailyDF, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Final.png}
+
+  # 功能策略组
+  - {name: 人工智能,     <<: *BestUS, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Bot.png}
+  - {name: 媒体服务,     <<: *DailyHK, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Media.png}
+  - {name: 社交平台,     <<: *BestUS, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Twitter.png}
+  - {name: 开发平台,     <<: *DailyUS, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Cloudflare.png}
+  - {name: 谷歌商店,     <<: *DailyHK, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Google.png}
+  
+  # 特殊策略组
+  - {name: 海外下载,     type: select, proxies: [廉价下载, 轮换代理, 默认代理, 故障转移, 香港策略, 狮城策略, 日本策略, 韩国策略, 美国策略, 台湾策略, 欧盟策略, 冷门自选, 全球手动, DIRECT], icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Download.png}
+  - {name: 轮换代理,     type: select, proxies: [廉价轮换, 全球轮换, 香港均衡-轮询, 台湾均衡-轮询, 狮城均衡-轮询, 日本均衡-轮询, 韩国均衡-轮询, 美国均衡-轮询, 欧盟均衡-轮询], icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Round_Robin.png}
+  - {name: 网络测试,     type: select, proxies: [DIRECT], include-all: true, filter: *FilterAL, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Speedtest.png}
+
+  # 地区策略组
+  - {name: 香港策略,     type: select, proxies: [香港自动, 香港精选, 香港均衡-散列, 香港均衡-轮询], include-all: true, filter: *FilterHK, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/HK.png}
+  - {name: 台湾策略,     type: select, proxies: [台湾自动, 台湾精选, 台湾均衡-散列, 台湾均衡-轮询], include-all: true, filter: *FilterTW, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/TW.png}
+  - {name: 狮城策略,     type: select, proxies: [狮城自动, 狮城精选, 狮城均衡-散列, 狮城均衡-轮询], include-all: true, filter: *FilterSG, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/SG.png}
+  - {name: 日本策略,     type: select, proxies: [日本自动, 日本精选, 日本均衡-散列, 日本均衡-轮询], include-all: true, filter: *FilterJP, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/JP.png}
+  - {name: 韩国策略,     type: select, proxies: [韩国自动, 韩国精选, 韩国均衡-散列, 韩国均衡-轮询], include-all: true, filter: *FilterKR, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/KR.png}
+  - {name: 美国策略,     type: select, proxies: [美国自动, 美国精选, 美国均衡-散列, 美国均衡-轮询], include-all: true, filter: *FilterUS, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/US.png}
+  - {name: 欧盟策略,     type: select, proxies: [欧盟自动, 欧盟精选, 欧盟均衡-散列, 欧盟均衡-轮询], include-all: true, filter: *FilterEU, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/EU.png}
+
+  # 其他策略组
+  - {name: 冷门自选,     type: select, include-all: true, filter: *FilterOT, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/United_States_Map.png}
+  - {name: 全球手动,     type: select, include-all: true, filter: *FilterAL, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Global.png}
+
+  # --------HIDE--------
+  # 杂项
+  - {name: 廉价下载,     <<: *Cheap, type: url-test, filter: *FilterAL, hidden: true}
+  - {name: 廉价轮换,     <<: *Cheap, type: load-balance, strategy: round-robin, filter: *FilterAL, hidden: true}
+  - {name: 全球轮换,     include-all: true, type: load-balance, strategy: round-robin, filter: *FilterAL, hidden: true}
+  
+  # 精选组
+  - {name: 香港精选,     <<: [*BaseUT, *Best],  filter: *FilterHK}
+  - {name: 台湾精选,     <<: [*BaseUT, *Best],  filter: *FilterTW}
+  - {name: 狮城精选,     <<: [*BaseUT, *Best],  filter: *FilterSG}
+  - {name: 日本精选,     <<: [*BaseUT, *Best],  filter: *FilterJP}
+  - {name: 韩国精选,     <<: [*BaseUT, *Best],  filter: *FilterKR}
+  - {name: 美国精选,     <<: [*BaseUT, *Best],  filter: *FilterUS}
+  - {name: 欧盟精选,     <<: [*BaseUT, *Best],  filter: *FilterEU}
+  
+  # 自动测速组
+  - {name: 香港自动,     <<: [*BaseUT, *Daily], filter: *FilterHK}
+  - {name: 台湾自动,     <<: [*BaseUT, *Daily], filter: *FilterTW}
+  - {name: 狮城自动,     <<: [*BaseUT, *Daily], filter: *FilterSG}
+  - {name: 日本自动,     <<: [*BaseUT, *Daily], filter: *FilterJP}
+  - {name: 韩国自动,     <<: [*BaseUT, *Daily], filter: *FilterKR}
+  - {name: 美国自动,     <<: [*BaseUT, *Daily], filter: *FilterUS}
+  - {name: 欧盟自动,     <<: [*BaseUT, *Daily], filter: *FilterEU}
+
+  # 负载均衡-散列组
+  - {name: 香港均衡-散列, <<: [*BaseCH, *Daily], filter: *FilterHK}
+  - {name: 台湾均衡-散列, <<: [*BaseCH, *Daily], filter: *FilterTW}
+  - {name: 狮城均衡-散列, <<: [*BaseCH, *Daily], filter: *FilterSG}
+  - {name: 日本均衡-散列, <<: [*BaseCH, *Daily], filter: *FilterJP}
+  - {name: 韩国均衡-散列, <<: [*BaseCH, *Daily], filter: *FilterKR}
+  - {name: 美国均衡-散列, <<: [*BaseCH, *Daily], filter: *FilterUS}
+  - {name: 欧盟均衡-散列, <<: [*BaseCH, *Daily], filter: *FilterEU}
+
+  # 负载均衡-轮询组
+  - {name: 香港均衡-轮询, <<: [*BaseCR, *Daily], filter: *FilterHK}
+  - {name: 台湾均衡-轮询, <<: [*BaseCR, *Daily], filter: *FilterTW}
+  - {name: 狮城均衡-轮询, <<: [*BaseCR, *Daily], filter: *FilterSG}
+  - {name: 日本均衡-轮询, <<: [*BaseCR, *Daily], filter: *FilterJP}
+  - {name: 韩国均衡-轮询, <<: [*BaseCR, *Daily], filter: *FilterKR}
+  - {name: 美国均衡-轮询, <<: [*BaseCR, *Daily], filter: *FilterUS}
+  - {name: 欧盟均衡-轮询, <<: [*BaseCR, *Daily], filter: *FilterEU}
+
+# ==================== 规则配置 ====================
+# 规则集行为模板
+BehaviorDM: &BehaviorDM {type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT}
+BehaviorCY: &BehaviorCY {type: http, behavior: classical, format: yaml, interval: 86400, proxy: DIRECT}
+BehaviorIM: &BehaviorIM {type: http, behavior: ipcidr, format: mrs, interval: 86400, proxy: DIRECT}
+
+# 规则提供者
+rule-providers:  
+  # 域名规则
+  Download:       {<<: *BehaviorDM, url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/domain/Download.mrs}
+  NewsMedia:      {<<: *BehaviorDM, url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/domain/NewsMedia.mrs}
+  fakeip-filter:  {<<: *BehaviorDM, url: https://gh-proxy.org/https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-ruleset/fakeip-filter.mrs}
+  AWAvenue:       {<<: *BehaviorDM, url: https://gh-proxy.org/https://github.com/TG-Twilight/AWAvenue-Ads-Rule/blob/main/Filters/AWAvenue-Ads-Rule-Clash.mrs}
+  GameDownload:   {<<: *BehaviorCY, url: https://gh-proxy.org/https://github.com/blackmatrix7/ios_rule_script/blob/master/rule/Clash/Game/GameDownload/GameDownload.yaml}
+
+  # IP 规则
+  ProxyIP:        {<<: *BehaviorIM, url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/ip/Proxy.mrs} 
+  ChinaIP:        {<<: *BehaviorIM, url: https://gh-proxy.org/https://github.com/666OS/rules/raw/release/mihomo/ip/China.mrs}
+
+# ==================== 规则路由 ====================
+rules: 
+  # --------拦截规则--------
+  # 防广告及追踪
+  - GEOSITE,category-ads-all,广告拦截
+  - RULE-SET,AWAvenue,广告拦截
+  
+  # 防国外QUIC
+  - AND,((DST-PORT,443),(NETWORK,UDP),(NOT,((GEOIP,CN)))),REJECT
+  
+  # --------特殊规则--------
+  # 内网
+  - GEOSITE,private,DIRECT
+  - GEOIP,private,DIRECT,no-resolve
+  
+  # API轮换代理
+  - DOMAIN-SUFFIX,kiko-play-niptan.one,轮换代理
+  - DOMAIN-SUFFIX,cloudflarestorage.com,轮换代理
+  - DOMAIN,b2.civitai.com,轮换代理
+  
+  # --------域名规则--------
+  # 网络测试
+  - GEOSITE,test-ipv6,网络测试
+  - DOMAIN-SUFFIX,ippure.com,网络测试
+  - DOMAIN-KEYWORD,ipleak,网络测试
+  - DOMAIN-KEYWORD,speedtest,网络测试
+  - GEOSITE,category-speedtest,网络测试
+  
+  # 国内网站
+  - GEOSITE,category-wiki-cn,DIRECT
+  - GEOSITE,bilibili,DIRECT
+  - GEOSITE,douyin,DIRECT
+  
+  # 开发平台
+  - GEOSITE,category-dev-cn,DIRECT
+  - GEOSITE,category-dev@cn,DIRECT
+  - GEOSITE,category-dev,开发平台
+  - DOMAIN,dash.cloudflare.com,开发平台
+  - DOMAIN,cloudflare.com,开发平台
+  - GEOSITE,vultr,开发平台
+  
+  # 游戏平台
+  - IP-ASN,32590,DIRECT,no-resolve
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - DOMAIN-SUFFIX,steamserver.net,DIRECT
+  - RULE-SET,GameDownload,DIRECT
+  - GEOSITE,category-games@cn,DIRECT
+  - GEOSITE,category-games,默认代理
+  - GEOSITE,category-game-platforms-download@cn,DIRECT
+  - GEOSITE,category-game-platforms-download,海外下载
+  
+  # 下载流量
+  - DOMAIN-KEYWORD,gh-proxy,DIRECT
+  - DOMAIN-SUFFIX,services.googleapis.cn,DIRECT
+  - DOMAIN-SUFFIX,services.googleapis.com,海外下载
+  - RULE-SET,Download,DIRECT
+  - GEOSITE,category-cdn-cn,DIRECT
+  - GEOSITE,category-cdn-!cn,海外下载
+  - GEOSITE,category-netdisk-!cn,海外下载
+  - GEOSITE,category-netdisk-cn,DIRECT
+  - GEOSITE,google-play@cn,DIRECT
+  - GEOSITE,google-play,谷歌商店
+  
+  # 人工智能
+  - DOMAIN-SUFFIX,opencode.ai,DIRECT
+  - GEOSITE,category-ai-!cn,人工智能
+  
+  # 特殊平台
+  - GEOSITE,ehentai,美国策略
+  - GEOSITE,pixiv,日本策略
+  - GEOSITE,category-porn,香港策略
+  
+  # 交易平台
+  - GEOSITE,stripe,DIRECT
+  - GEOSITE,category-cryptocurrency,狮城策略
+
+  # 国外媒体
+  - GEOSITE,netflix,媒体服务
+  - GEOSITE,youtube,媒体服务
+  - GEOSITE,disney,媒体服务
+  - GEOSITE,tiktok,媒体服务
+  - GEOSITE,spotify,媒体服务
+  - GEOSITE,category-emby,媒体服务
+  - RULE-SET,NewsMedia,媒体服务
+
+  # 社交平台
+  - GEOSITE,twitter,社交平台
+  - GEOSITE,category-communication,社交平台
+  - GEOSITE,category-social-media-!cn,社交平台
+
+  # 商业服务
+  - GEOSITE,category-companies@cn,DIRECT
+  - GEOSITE,category-companies,默认代理
+
+  # 通用分流
+  - GEOSITE,geolocation-!cn,默认代理
+  - GEOSITE,cn,DIRECT
+
+  # --------IP规则--------
+  - GEOIP,twitter,社交平台,no-resolve
+  - GEOIP,telegram,社交平台,no-resolve
+  - GEOIP,netflix,媒体服务,no-resolve
+  - RULE-SET,ProxyIP,默认代理,no-resolve
+  - RULE-SET,ChinaIP,DIRECT,no-resolve
+  - GEOIP,cn,DIRECT,no-resolve
+
+  # --------兜底规则--------
+  - MATCH,兜底流量
+
+# ==================== EOF ====================
