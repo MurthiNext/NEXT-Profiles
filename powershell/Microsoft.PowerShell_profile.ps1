@@ -2,8 +2,8 @@
 NEXT PowerShell Profile
 
 作者：MurthiNext
-日期：2026/05/30
-版本：1.0
+日期：2026/07/03
+版本：1.1
 
 此配置文件需要 PowerShell 7 及以上版本。
 
@@ -26,6 +26,7 @@ NEXT PowerShell Profile
 - fastfetch
 - Microsoft Visual Studio Build Tools
 - Python
+- gsudo
 
 需要的配置文件（可自行修改替换）：
 - $OhMyPoshConfigPath
@@ -39,6 +40,7 @@ NEXT PowerShell Profile
 # 配置
 $OhMyPoshConfigPath = "$env:USERPROFILE\.config\oh-my-posh\montys.omp.changed.json" # Oh My Posh 配置文件路径
 $FastFetchConfigPath = "$env:USERPROFILE\.config\fastfetch\config.jsonc" # FastFetch 配置文件路径
+$env:EDITOR = "code --wait" # OpenCode 编辑器
 
 # Oh My Posh
 oh-my-posh init pwsh --config $OhMyPoshConfigPath | Invoke-Expression
@@ -70,6 +72,7 @@ Import-Module posh-git
 Import-Module ZLocation
 Import-Module Terminal-Icons
 Import-Module Microsoft.WinGet.CommandNotFound
+Import-Module gsudoModule
 Set-PSReadLineKeyHandler -Key "Ctrl+z" -Function Undo
 Set-PSReadLineKeyHandler -Key "Ctrl+d" -Function ViExit
 Set-PSReadLineOption @params

@@ -26,6 +26,7 @@
 - fastfetch
 - Microsoft Visual Studio Build Tools
 - Python
+- gsudo
 
 ### 需要的配置文件（可自行修改替换）：
 - $OhMyPoshConfigPath
