@@ -35,6 +35,3 @@
 - $FastFetchConfigPath
     - 默认为 config.jsonc
     - 基于 examples/26.jsonc 修改，优化了内容与排版
-
-## 许可证
-* 本项目采用 **MIT 许可证**。详情请参阅 [LICENSE](LICENSE) 文件。
