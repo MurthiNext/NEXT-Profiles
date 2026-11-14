@@ -155,7 +155,8 @@ proxy-groups:
   - {name: 媒体服务,     <<: *DailyHK, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Media.png}
   - {name: 社交平台,     <<: *BestUS, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Twitter.png}
   - {name: 开发平台,     <<: *DailyUS, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Cloudflare.png}
-  - {name: 谷歌商店,     <<: *DailyHK, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Google.png}
+  - {name: 谷歌服务,     <<: *DailyDF, icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Google.png}
+  - {name: E-Hentai,    <<: *BestUS}
   
   # 特殊策略组
   - {name: 海外下载,     type: select, proxies: [廉价下载, 轮换代理, 默认代理, 故障转移, 香港策略, 狮城策略, 日本策略, 韩国策略, 美国策略, 台湾策略, 欧盟策略, 冷门自选, 全球手动, DIRECT], icon: https://gh-proxy.org/https://github.com/Koolson/Qure/blob/master/IconSet/Download.png}
@@ -263,25 +264,36 @@ rules:
   - DOMAIN-KEYWORD,ipleak,网络测试
   - DOMAIN-KEYWORD,speedtest,网络测试
   - GEOSITE,category-speedtest,网络测试
+
+  - DOMAIN-SUFFIX,miraheze.org,DIRECT
   
   # 国内网站
+  - GEOSITE,bing@cn,DIRECT
   - GEOSITE,category-wiki-cn,DIRECT
   - GEOSITE,bilibili,DIRECT
   - GEOSITE,douyin,DIRECT
+  - GEOSITE,netease,DIRECT
+  - DOMAIN-SUFFIX,163.com,DIRECT
   
   # 开发平台
-  - GEOSITE,category-dev-cn,DIRECT
-  - GEOSITE,category-dev@cn,DIRECT
-  - GEOSITE,category-dev,开发平台
   - DOMAIN,domains.cloudflare.com,开发平台
   - DOMAIN,dash.cloudflare.com,开发平台
   - DOMAIN,cloudflare.com,开发平台
   - GEOSITE,vultr,开发平台
+  - DOMAIN-SUFFIX,maven.minecraftforge.net,开发平台
+  - DOMAIN-SUFFIX,libraries.minecraft.net,开发平台
+  - DOMAIN-SUFFIX,gradle.org,开发平台
+  - DOMAIN-SUFFIX,spongepowered.org,开发平台
+  - GEOSITE,category-dev-cn,DIRECT
+  - GEOSITE,category-dev@cn,DIRECT
+  - GEOSITE,category-dev,开发平台
   
   # 游戏平台
   - IP-ASN,32590,DIRECT,no-resolve
   - DOMAIN-SUFFIX,steamcontent.com,DIRECT
   - DOMAIN-SUFFIX,steamserver.net,DIRECT
+  - DOMAIN-SUFFIX,mojang.com,DIRECT
+  - DOMAIN-SUFFIX,minecraft.net,DIRECT
   - RULE-SET,GameDownload,DIRECT
   - GEOSITE,category-games@cn,DIRECT
   - GEOSITE,category-games,默认代理
@@ -297,21 +309,21 @@ rules:
   - GEOSITE,category-cdn-!cn,海外下载
   - GEOSITE,category-netdisk-!cn,海外下载
   - GEOSITE,category-netdisk-cn,DIRECT
-  - GEOSITE,google-play@cn,DIRECT
-  - GEOSITE,google-play,谷歌商店
   
   # 人工智能
   - DOMAIN-SUFFIX,opencode.ai,DIRECT
   - GEOSITE,category-ai-!cn,人工智能
   
   # 特殊平台
-  - GEOSITE,ehentai,美国策略
-  - GEOSITE,pixiv,日本策略
-  - GEOSITE,category-porn,香港策略
+  - DOMAIN-SUFFIX,cubk.cn,默认代理
+  - DOMAIN,asmr.one,默认代理
+  - GEOSITE,ehentai,E-Hentai
+  - GEOSITE,pixiv,默认代理
+  - GEOSITE,category-porn,默认代理
   
   # 交易平台
   - GEOSITE,stripe,DIRECT
-  - GEOSITE,category-cryptocurrency,狮城策略
+  - GEOSITE,category-cryptocurrency,默认代理
 
   # 国外媒体
   - GEOSITE,netflix,媒体服务
@@ -328,6 +340,8 @@ rules:
   - GEOSITE,category-social-media-!cn,社交平台
 
   # 商业服务
+  - GEOSITE,google@cn,DIRECT
+  - GEOSITE,google,谷歌服务
   - GEOSITE,category-companies@cn,DIRECT
   - GEOSITE,category-companies,默认代理
 
@@ -339,6 +353,7 @@ rules:
   - GEOIP,twitter,社交平台,no-resolve
   - GEOIP,telegram,社交平台,no-resolve
   - GEOIP,netflix,媒体服务,no-resolve
+  - GEOIP,google,谷歌服务,no-resolve
   - RULE-SET,ProxyIP,默认代理,no-resolve
   - RULE-SET,ChinaIP,DIRECT,no-resolve
   - GEOIP,cn,DIRECT,no-resolve

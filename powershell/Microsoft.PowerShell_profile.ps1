@@ -2,39 +2,10 @@
 NEXT PowerShell Profile
 
 作者：MurthiNext
-日期：2026/07/03
-版本：1.1
+日期：2026/11/14
+版本：1.2
 
 此配置文件需要 PowerShell 7 及以上版本。
-
-此配置文件实现的功能：
-- 设置 UTF-8 编码
-- 调整 PSReadLine 设置
-- 添加实用的快捷键
-- 快速启动 C++ 与 Python 的开发环境
-- ……以及下列模块与软件实现的所有功能
-
-需要的 PowerShell 模块：
-- posh-git
-- ZLocation
-- Terminal-Icons
-- Microsoft.WinGet.CommandNotFound
-- VSSetup
-
-需要提前安装的软件：
-- oh-my-posh
-- fastfetch
-- Microsoft Visual Studio Build Tools
-- Python
-- gsudo
-
-需要的配置文件（可自行修改替换）：
-- $OhMyPoshConfigPath
-    - 默认为 montys.omp.changed.json
-    - 基于 montys 修改，添加了连接线与 Python 环境显示
-- $FastFetchConfigPath
-    - 默认为 config.jsonc
-    - 基于 examples/26.jsonc 修改，优化了内容与排版
 #>
 
 # 配置
@@ -146,9 +117,65 @@ function SetupPyVenv {
     }
 }
 
+# 格式化 git 改动中的源码文件
+function FormatDiff {
+    [CmdletBinding()]
+    param(
+        [string]$Revision = "HEAD",
+        [string[]]$Extension = @(
+            ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".hxx", ".hh", ".h++", ".inl", ".ipp",
+            ".cu", ".cuh", ".m", ".mm", ".java", ".js", ".ts", ".cs", ".proto"
+        )
+    )
+
+    if (-not (Get-Command clang-format -ErrorAction SilentlyContinue)) {
+        Write-Host "未找到 clang-format，请先安装 LLVM 并加入 PATH。" -ForegroundColor Red
+        return
+    }
+
+    $repoRoot = git rev-parse --show-toplevel 2>$null
+    if (-not $repoRoot) {
+        Write-Host "当前目录不在 Git 仓库中。" -ForegroundColor Red
+        return
+    }
+    $repoRoot = $repoRoot.Trim()
+
+    # 尚无提交时与空树比较
+    if (-not (git rev-parse --verify -q $Revision 2>$null)) {
+        $Revision = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+    }
+
+    $paths = @(
+        git -C $repoRoot -c core.quotepath=off diff --name-only --diff-filter=ACMR -z $Revision
+        git -C $repoRoot -c core.quotepath=off ls-files --others --exclude-standard -z
+    ) -join "`0"
+
+    $files = $paths -split "`0" |
+        Where-Object { $_ -and $Extension -contains [System.IO.Path]::GetExtension($_).ToLower() } |
+        ForEach-Object { Join-Path $repoRoot $_ } |
+        Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } |
+        Sort-Object -Unique
+
+    if (-not $files) {
+        Write-Host "Git 改动中没有可格式化的源码文件。" -ForegroundColor Yellow
+        return
+    }
+
+    foreach ($file in $files) {
+        clang-format -i --style=file $file
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "已格式化 $file" -ForegroundColor Green
+        }
+        else {
+            Write-Host "格式化失败：$file" -ForegroundColor Red
+        }
+    }
+}
+
 # 自定义别名
 Set-Alias -Name "devc" -Value SetupDevShell
 Set-Alias -Name "devpy" -Value SetupPyVenv
+Set-Alias -Name "fmtdiff" -Value FormatDiff
 
 # FastFetch
 if (Get-Command fastfetch -ErrorAction SilentlyContinue) {

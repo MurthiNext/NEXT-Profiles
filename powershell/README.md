@@ -11,6 +11,8 @@
 - 快速启动 C++ 与 Python 的开发环境
    - 键入 `devc` 命令以启动 `Devloper PowerShell` 环境
    - 键入 `devpy` 命令以快速启动当前目录下的 Python 虚拟环境（支持多个虚拟环境的选择）
+- 一键格式化 Git 改动
+   - 键入 `fmtdiff` 命令，自动拣出 `git diff` 中的改动文件与未跟踪文件，按扩展名过滤后交给 `clang-format -i` 处理（默认以 `HEAD` 为基准，可用 `-Revision` 指定）
 - ……以及下列模块与软件实现的所有功能
 
 ## 初次使用需要配置的内容
@@ -27,6 +29,7 @@
 - Microsoft Visual Studio Build Tools
 - Python
 - gsudo
+- LLVM（`clang-format` 需在 PATH 中）
 
 ### 需要的配置文件（可自行修改替换）：
 - $OhMyPoshConfigPath
