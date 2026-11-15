@@ -1,7 +1,5 @@
 # NEXT PowerShell Profile
 
-### Yes! 这是 MurthiNext 本人正在使用且精心编写的 PowerShell 配置文件，其正在强势维护中，与一般的配置文件不同，在花里胡哨的同时，也要追求实用！
-
 ## 此配置文件实现的功能：
 - 设置 UTF-8 编码
 - 调整 PSReadLine 设置

@@ -117,19 +117,16 @@ function SetupPyVenv {
     }
 }
 
-# 格式化 git 改动中的源码文件
+# 格式化 git 改动中的 Java 文件
 function FormatDiff {
     [CmdletBinding()]
     param(
         [string]$Revision = "HEAD",
-        [string[]]$Extension = @(
-            ".c", ".h", ".cc", ".cpp", ".cxx", ".hpp", ".hxx", ".hh", ".h++", ".inl", ".ipp",
-            ".cu", ".cuh", ".m", ".mm", ".java", ".js", ".ts", ".cs", ".proto"
-        )
+        [string[]]$Extension = @(".java")
     )
 
-    if (-not (Get-Command clang-format -ErrorAction SilentlyContinue)) {
-        Write-Host "未找到 clang-format，请先安装 LLVM 并加入 PATH。" -ForegroundColor Red
+    if (-not (Get-Command open-java-format -ErrorAction SilentlyContinue)) {
+        Write-Host "未找到 open-java-format，请先安装并加入 PATH。" -ForegroundColor Red
         return
     }
 
@@ -157,12 +154,12 @@ function FormatDiff {
         Sort-Object -Unique
 
     if (-not $files) {
-        Write-Host "Git 改动中没有可格式化的源码文件。" -ForegroundColor Yellow
+        Write-Host "Git 改动中没有可格式化的文件。" -ForegroundColor Yellow
         return
     }
 
     foreach ($file in $files) {
-        clang-format -i --style=file $file
+        open-java-format --replace $file
         if ($LASTEXITCODE -eq 0) {
             Write-Host "已格式化 $file" -ForegroundColor Green
         }
